@@ -1,14 +1,28 @@
+using Gitregator.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
+var services = builder.Services;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .CreateLogger();
+services.AddSingleton(Log.Logger);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+services.AddControllers();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+
+services.AddScoped<IGithubAggregatorService, GithubAggregatorService>();
 
 var app = builder.Build();
 
@@ -19,10 +33,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
