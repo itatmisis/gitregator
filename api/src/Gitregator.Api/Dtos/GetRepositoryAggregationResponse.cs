@@ -21,6 +21,8 @@ public class GetRepositoryAggregationResponse
 
     public string MostUsedLanguage { get; init; } = null!;
 
+    public Dictionary<string, int> Languages { get; init; } = null!;
+
     public IEnumerable<Collaborator> Collaborators { get; init; } = Array.Empty<Collaborator>();
 
     public IEnumerable<Collaborator> Issuers { get; init; } = Array.Empty<Collaborator>();

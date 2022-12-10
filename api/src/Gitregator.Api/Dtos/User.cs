@@ -1,12 +1,16 @@
+using System.Collections.Generic;
+
 namespace Gitregator.Api.Dtos;
 
 public class User
 {
-    public long Id { get; init; }
+    public int Id { get; init; }
 
     public decimal ActivityIndex { get; init; }
 
     public string TopLanguage { get; init; } = null!;
+
+    public Dictionary<string, int> Languages { get; init; } = null!;
 
     public string Username { get; init; } = null!;
 
@@ -20,7 +24,13 @@ public class User
 
     public string PersonalWebsite { get; init; } = null!;
 
-    public string Twitter { get; init; } = null!;
+    public string? Company { get; set; }
+
+    public string? Email { get; set; }
 
     public int StarsCount { get; init; }
+
+    public int FollowersCount { get; set; }
+
+    public int FollowingCount { get; set; }
 }
