@@ -11,15 +11,17 @@ public class GetRepositoryAggregationResponse
 
     public string RepositoryName { get; init; } = null!;
 
-    public string RepositoryDescription { get; init; } = null!;
+    public string? RepositoryDescription { get; init; }
 
-    public int CommitsTotal { get; init; }
+    public int OpenCommitsTotal { get; init; }
 
-    public int IssuesTotal { get; init; }
+    public int OpenIssuesTotal { get; init; }
 
-    public int PullRequestTotal { get; init; }
+    public int PullRequestsTotal { get; init; }
 
     public string MostUsedLanguage { get; init; } = null!;
+
+    public Dictionary<string, long> Languages { get; init; } = null!;
 
     public IEnumerable<Collaborator> Collaborators { get; init; } = Array.Empty<Collaborator>();
 

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Gitregator.Api.Dtos;
 
 public class CollaboratedRepos
@@ -17,4 +19,6 @@ public class CollaboratedRepos
     public int PullRequestTotal { get; init; }
 
     public string MostUsedLanguage { get; init; } = null!;
+
+    public Dictionary<string, int> Languages { get; init; } = null!;
 }

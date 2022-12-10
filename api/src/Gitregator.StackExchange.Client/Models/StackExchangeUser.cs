@@ -1,44 +1,45 @@
 using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 
 namespace Gitregator.StackExchange.Client.Models;
 
-public abstract class StackExchangeUser
+public class StackExchangeUser
 {
-    [JsonPropertyName("badage_counts")]
+    [JsonProperty("badage_counts")]
     public BadgeCount? BadageCounts { get; set; }
-    [JsonPropertyName("view_count")]
+    [JsonProperty("view_count")]
     public int ViewCount { get; set; }
-    [JsonPropertyName("down_vote_count")]
+    [JsonProperty("down_vote_count")]
     public int DownVoteCount { get; set; }
-    [JsonPropertyName("up_vote_count")]
+    [JsonProperty("up_vote_count")]
     public int UpVoteCount { get; set; }
-    [JsonPropertyName("answer_count")]
+    [JsonProperty("answer_count")]
     public int AnswerCount { get; set; }
-    [JsonPropertyName("question_count")]
+    [JsonProperty("question_count")]
     public int QuestionCount { get; set; }
-    [JsonPropertyName("account_id")]
+    [JsonProperty("account_id")]
     public int AccountId { get; set; }
-    [JsonPropertyName("reputation")]
+    [JsonProperty("reputation")]
     public int Reputation { get; set; }
-    [JsonPropertyName("reputation_change_day")]
+    [JsonProperty("reputation_change_day")]
     public int ReputationChangeDay { get; set; }
-    [JsonPropertyName("reputation_change_week")]
+    [JsonProperty("reputation_change_week")]
     public int ReputationChangeWeek { get; set; }
-    [JsonPropertyName("reputation_change_month")]
+    [JsonProperty("reputation_change_month")]
     public int ReputationChangeMonth { get; set; }
-    [JsonPropertyName("reputation_change_quarter")]
+    [JsonProperty("reputation_change_quarter")]
     public int ReputationChangeQuarter { get; set; }
-    [JsonPropertyName("reputation_change_year")]
+    [JsonProperty("reputation_change_year")]
     public int ReputationChangeYear { get; set; }
-    [JsonPropertyName("user_id")]
+    [JsonProperty("user_id")]
     public int UserId { get; set; }
-    [JsonPropertyName("accept_rate")]
+    [JsonProperty("accept_rate")]
     public int AcceptRate { get; set; }
-    [JsonPropertyName("website_url")]
+    [JsonProperty("website_url")]
     public string? WebsiteUrl { get; set; }
-    [JsonPropertyName("link")]
+    [JsonProperty("link")]
     public string? Link { get; set; }
-    [JsonPropertyName("display_name")]
+    [JsonProperty("display_name")]
     public string? DisplayName { get; set; }
 }
