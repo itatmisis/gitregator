@@ -39,10 +39,9 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
         CancellationToken cancellationToken)
     {
         var client = _provider.GetClient();
-        var userSource = client.User.Get(userLogin).WaitAsync(cancellationToken).Result;
+        var userSource = await client.User.Get(userLogin);
 
-        var starsCount = client.Activity.Starring.GetAllForUser(userLogin).WaitAsync(cancellationToken)
-            .Result.Count;
+        var starsCount = (await client.Activity.Starring.GetAllForUser(userLogin)).Count;
 
         // Get count of commit pages
         var commitsPageNum = Math.Ceiling((double)(await client.Connection.Get<Wrapper>(
@@ -50,14 +49,14 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
                 $"{client.Connection.BaseAddress}search/commits?q=committer:{userLogin}&per_page=1"),
             new Dictionary<string, string>())).Body.TotalCount / 100);
 
-        List<Task<IApiResponse<Wrapper>>> tasks = new List<Task<IApiResponse<Wrapper>>>();
+        var tasks = new List<Task<IApiResponse<Wrapper>>>();
 
         // Get count of commits
-        for (int i = 1; i <= commitsPageNum; i++)
+        for (var i = 1; i <= commitsPageNum; i++)
         {
             tasks.Add(client.Connection.Get<Wrapper>(
                 new Uri(
-                    $"{client.Connection.BaseAddress}search/commits?q=committer:{userLogin}&per_page=100&page={i}"),
+                    $"""{client.Connection.BaseAddress}search/commits?q=committer:"{userLogin}"&per_page=100&page={i}"""),
                 new Dictionary<string, string>()));
         }
 
@@ -67,11 +66,11 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
         {
             client.Connection.Get<Wrapper>(
                 new Uri(
-                    $"{client.Connection.BaseAddress}search/issues?q=user:{userLogin} is:pull-request&per_page=1"),
+                    $"""{client.Connection.BaseAddress}search/issues?q=user:"{userLogin}" is:pull-request&per_page=1"""),
                 new Dictionary<string, string>()),
             client.Connection.Get<Wrapper>(
                 new Uri(
-                    $"{client.Connection.BaseAddress}search/issues?q=user:{userLogin} is:issue&per_page=1"),
+                    $"""{client.Connection.BaseAddress}search/issues?q=user:"{userLogin}" is:issue&per_page=1"""),
                 new Dictionary<string, string>())
         };
 
