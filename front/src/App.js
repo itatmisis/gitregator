@@ -6,11 +6,13 @@ import Layout from "./components/Layout";
 function App() {
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Layout></Layout>}></Route>
-        <Route path="/" element={<></>}></Route>
-        <Route path="/" element={<></>}></Route>
-      </Routes>
+      <Layout>
+        <Routes>
+          <Route path="/1" element={<Layout></Layout>}></Route>
+          <Route path="/about" element={<></>}></Route>
+          <Route path="/callUs" element={<></>}></Route>
+        </Routes>
+      </Layout>
     </>
   );
 }
