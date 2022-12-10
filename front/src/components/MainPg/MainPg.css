@@ -1,0 +1,84 @@
+
+.label{
+  width: 100%;
+  height: 100vh;
+  z-index: 4;
+  opacity: 1;
+  background: url('label.png');
+  position: fixed;
+  background-size: cover;
+  mix-blend-mode: color-dodge;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 3px solid #2E2E2E;
+}
+.label h1{
+  font-family: 'Radiotechnika';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 64px;
+    line-height: 62px;
+  
+    
+    text-align: right;
+    text-transform: uppercase;
+  
+    color: #FFFFFF;
+}
+.label span {
+  font-family: 'Nunito Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 33px;
+    text-align: center;
+    letter-spacing: 0.04em;
+  
+    color: #B4B4B4;
+}
+.animatedLabel-enter {
+  opacity: 0.4;
+    transform: scale(1.2);
+    z-index: 0;
+    transition: position 1000ms, opacity 1000ms, transform 200ms, z-index 100ms;
+}
+
+.animatedLabel-enter-active {
+  opacity: 1.2;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+
+
+.animatedLabel-exit-active {
+  opacity: 1;
+ 
+  transform: scale(0.9);
+  z-index: 5;
+  transition:position 200ms, opacity 200ms, transform 200ms,z-index 100ms;
+
+}
+.animatedLabel-exit-done {
+  opacity: 0.4;
+  transform: scale(1.2);
+  z-index: 0;
+  transition: position 200ms, opacity 200ms, transform 200ms, z-index 100ms;
+
+}
+.enter-exit-done {
+  opacity: 1;
+
+  transform: scale(1.2);
+  z-index: 5;
+  transition: position 200ms, opacity 200ms, transform 200ms, z-index 100ms;
+
+}
+
+.enter-exit-active {
+  opacity: 0.9;
+  transform: scale(1.2);
+  z-index: 0;
+  transition: position 1000ms, opacity 1000ms, transform 200ms, z-index 100ms;}

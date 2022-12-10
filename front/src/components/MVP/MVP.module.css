@@ -1,0 +1,33 @@
+.sorting{
+  width: 100%;
+  height: 100px;
+  display: flex;
+  justify-content: space-evenly;
+  position: relative;
+  
+}
+.sortingCategory{
+  width: auto;
+  
+  
+}
+.mvpList{
+ color:black; 
+ height: 77vh;
+overflow-y: scroll;
+}
+
+.listCategory{
+  width: 100%;
+  height: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  border: 1px solid black;
+  position: -webkit-sticky;
+}
+.categoryName{
+  text-decoration: none;
+  border: none;
+  background-color: #fff;
+  display: block;
+}

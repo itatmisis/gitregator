@@ -1,0 +1,57 @@
+.EnterField{
+  height: 84.5vh;
+  width: 100%;
+  background-color: #0A1117;
+  z-index: -1;
+  mix-blend-mode: color-dodge;
+  opacity: 0.97;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  
+}
+.textField{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.textField h1{
+  font-family: 'Radiotechnika';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 35px;
+  
+    /* identical to box height */
+    text-transform: uppercase;
+  
+    color: #FFFFFF; 
+}
+.textField span{
+  font-family: 'Nunito Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 33px;
+  
+    /* identical to box height */
+    letter-spacing: 0.04em;
+  
+    color: #878787;
+}
+.input{
+  width: 800px;
+  height: 68px;
+  background: none;
+  backdrop-filter: blur(16px);
+  border: 2px solid #757474;
+  color: #939393;
+}
+.input:active{
+  border: none;
+}
+body{
+  overflow: hidden;
+}
