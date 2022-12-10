@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Gitregator.Github.Client;
 using AutoFixture;
 using Gitregator.Api.Dtos;
+using Gitregator.StackExchange.Client.HttpServices;
+using Octokit;
 
 namespace Gitregator.Api.Services;
 
@@ -43,37 +45,58 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
             .Result.Count;
 
         // Get count of commit pages
-        var pageNum = Math.Ceiling((double)(await client.Connection.Get<Wrapper>(
+        var commitsPageNum = Math.Ceiling((double)(await client.Connection.Get<Wrapper>(
             new Uri(
                 $"{client.Connection.BaseAddress}search/commits?q=committer:{userLogin}&per_page=1"),
             new Dictionary<string, string>())).Body.TotalCount / 100);
 
+        List<Task<IApiResponse<Wrapper>>> tasks = new List<Task<IApiResponse<Wrapper>>>();
+
         // Get count of commits
-        var commits = (await client.Connection.Get<Wrapper>(
-            new Uri(
-                $"{client.Connection.BaseAddress}search/commits?q=committer:{userLogin}&per_page=100&page={pageNum}"),
-            new Dictionary<string, string>())).Body.Items.ToList();
-
-        var repos = commits.Select(x => x.Repository).Distinct().ToList();
-        var reposCount = repos.Count();
-
-        var languages = new Dictionary<string, long>();
-        foreach (var repo in repos)
+        for (int i = 1; i <= commitsPageNum; i++)
         {
-            var currentLanguages = (await client.Repository.GetAllLanguages(repo!.Owner!.Login, repo.Name))
-                .ToDictionary(x => x.Name, x => x.NumberOfBytes);
-            foreach (var t in currentLanguages)
-            {
-                if (languages.ContainsKey(t.Key))
-                {
-                    languages[t.Key] += t.Value;
-                }
-                else
-                {
-                    languages.Add(t.Key, t.Value);
-                }
-            }
+            tasks.Add(client.Connection.Get<Wrapper>(
+                new Uri(
+                    $"{client.Connection.BaseAddress}search/commits?q=committer:{userLogin}&per_page=100&page={i}"),
+                new Dictionary<string, string>()));
         }
+
+        var commits = (await Task.WhenAll(tasks)).SelectMany(x => x.Body.Items).ToList();
+
+        tasks = new List<Task<IApiResponse<Wrapper>>>
+        {
+            client.Connection.Get<Wrapper>(
+                new Uri(
+                    $"{client.Connection.BaseAddress}search/issues?q=user:{userLogin} is:pull-request&per_page=1"),
+                new Dictionary<string, string>()),
+            client.Connection.Get<Wrapper>(
+                new Uri(
+                    $"{client.Connection.BaseAddress}search/issues?q=user:{userLogin} is:issue&per_page=1"),
+                new Dictionary<string, string>())
+        };
+
+        var taskRes = (await Task.WhenAll(tasks)).ToList();
+
+        var pullRequestsCount = taskRes[0].Body.TotalCount;
+        var issuesCount = taskRes[1].Body.TotalCount;
+
+        var repos = commits.Select(x => x.Repository).DistinctBy(x => x!.Id).ToList();
+        var reposCount = repos.Count;
+
+        var languageTasks = repos.Select(repo => client.Repository.GetAllLanguages(repo!.Owner!.Login, repo.Name))
+            .ToList();
+
+        var languagesList = await Task.WhenAll(languageTasks);
+
+        var groupedLanguages = languagesList.SelectMany(x => x).GroupBy(x => x.Name).ToList();
+
+        var languages = groupedLanguages.ToDictionary(t => t.Key, t => t.Sum(x => x.NumberOfBytes));
+
+        var activity = Math.Round(
+            (decimal)commits.Where(x => x!.Commit!.Committer!.Date > DateTime.Now.AddMonths(-1)).ToList().Count
+            / commits.Where(x => x!.Commit!.Author!.Date > DateTime.Now.AddYears(-1)).ToList().Count * 10, 1);
+
+        var stackExchangeUser = await ConnectToStackExchange.GetUserByNameAsync(userLogin, cancellationToken);
 
         var user = new ExtendedUser()
         {
@@ -91,7 +114,12 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
             StarsCount = starsCount,
             CommitsCount = commits.Count,
             ReposCount = reposCount,
-            Languages = languages
+            Languages = languages,
+            TopLanguage = languages.OrderByDescending(x => x.Value).FirstOrDefault().Key,
+            StackOverflowUrl = stackExchangeUser?.Link,
+            ActivityIndex = activity,
+            PullRequestsCount = pullRequestsCount,
+            IssuesCount = issuesCount
         };
 
         return new GetMemberAggregationResponse { User = user };

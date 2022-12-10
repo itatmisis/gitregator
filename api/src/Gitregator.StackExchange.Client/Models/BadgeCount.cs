@@ -1,6 +1,6 @@
 namespace Gitregator.StackExchange.Client.Models;
 
-public abstract class BadgeCount
+public class BadgeCount
 {
     public int Bronze { get; set; }
     public int Silver { get; set; }
