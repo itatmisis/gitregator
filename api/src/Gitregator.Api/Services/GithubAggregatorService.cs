@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Gitregator.Github.Client;
-using Octokit;
 using AutoFixture;
 using Gitregator.Api.Dtos;
 
@@ -36,22 +35,25 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
         CancellationToken cancellationToken)
     {
         var userSource = _provider.GetClient().User.Get(userLogin).WaitAsync(cancellationToken).Result;
-        var result = new GetMemberAggregationResponse()
+
+        var starsCount = _provider.GetClient().Activity.Starring.GetAllForUser(userLogin).WaitAsync(cancellationToken).Result.Count;
+
+        var user = new ExtendedUser()
         {
-            User = new ExtendedUser()
-            {
-                Username = userSource.Login,
-                DisplayName = userSource.Name,
-                ProfilePicUrl = userSource.AvatarUrl,
-                Description = userSource.Bio,
-                Location = userSource.Location,
-                PersonalWebsite = userSource.Blog,
-                Email = userSource.Email,
-                Company = userSource.Company,
-                FollowersCount = userSource.Followers,
-                FollowingCount = userSource.Following
-            }
+            Id = userSource.Id,
+            Username = userSource.Login,
+            DisplayName = userSource.Name,
+            ProfilePicUrl = userSource.AvatarUrl,
+            Description = userSource.Bio,
+            Location = userSource.Location,
+            PersonalWebsite = userSource.Blog,
+            Email = userSource.Email,
+            Company = userSource.Company,
+            FollowersCount = userSource.Followers,
+            FollowingCount = userSource.Following,
+            StarsCount = starsCount
         };
-        return Task.FromResult(result);
+
+        return Task.FromResult(new GetMemberAggregationResponse {User = user});
     }
 }

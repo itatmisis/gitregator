@@ -8,9 +8,9 @@ public class User
 
     public decimal ActivityIndex { get; init; }
 
-    public string TopLanguage { get; init; } = null!;
+    public string? TopLanguage { get; init; }
 
-    public Dictionary<string, int> Languages { get; init; } = null!;
+    public Dictionary<string, int>? Languages { get; init; }
 
     public string Username { get; init; } = null!;
 
@@ -22,7 +22,7 @@ public class User
 
     public string Location { get; init; } = null!;
 
-    public string PersonalWebsite { get; init; } = null!;
+    public string? PersonalWebsite { get; init; }
 
     public string? Company { get; set; }
 
