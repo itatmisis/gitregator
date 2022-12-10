@@ -29,14 +29,15 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
         var issuers = issues.Select(x => x.User).Distinct().ToList();
         var contids = contributors.Select(x => x.Login);
         var users = new List<Collaborator>();
-        var usersTasks = new List<Task<Octokit.User>>();
-        foreach (var con in contids)
-        {
-           usersTasks.Add(client.User.Get(con));
-        }
+        var usersTasks = contids.Select(con => client.User.Get(con)).ToList();
+        var openRepositoryCommits = await client.Repository.Commit.GetAll(owner, name);
+        var openRepositoryIssues = await client.Issue.GetAllForRepository(owner, name);
+        var repositoryPullRequests = await client.PullRequest.GetAllForRepository(owner, name);
+        var repositoryLanguages = await client.Repository.GetAllLanguages(owner, name);
 
         var usersGit = await Task.WhenAll(usersTasks);
 
+        // TODO: Fix for all pages
         var tasks22 = usersGit.Where(x => !x.Login.Contains("-")).Select(
             x => client.Connection.Get<Wrapper>(
                 new Uri(
@@ -44,27 +45,31 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
                 new Dictionary<string, string>()));
 
         var tasks22Result = await Task.WhenAll(tasks22);
-        var commits = tasks22Result.SelectMany(x => x.Body.Items);
 
-        var activity = Math.Round(
-            (decimal)commits.Where(x => x!.Commit!.Committer!.Date > DateTime.Now.AddMonths(-1)).ToList().Count
-            / commits.Where(x => x!.Commit!.Author!.Date > DateTime.Now.AddYears(-1)).ToList().Count * 10, 1);
-
-        users.AddRange(usersGit.Select(x => new Collaborator()
+        users.AddRange(usersGit.Select(x =>
         {
-            Id = x.Id,
-            Username = x.Login,
-            DisplayName = x.Name,
-            ProfilePicUrl = x.AvatarUrl,
-            Description = x.Bio,
-            Location = x.Location,
-            PersonalWebsite = x.Blog,
-            Email = x.Email,
-            ActivityIndex = activity,
-            Company = x.Company,
-            FollowersCount = x.Followers,
-            FollowingCount = x.Following,
-            CommitsTotal = tasks22Result.FirstOrDefault(z => z.Body.Items.FirstOrDefault()?.Author?.Login == x.Login)?.Body?.TotalCount ?? 0,
+            var author = tasks22Result.FirstOrDefault(z =>
+                    z.Body.Items.FirstOrDefault()?.Author?.Login == x.Login)?.Body;
+            decimal commitsCountPerMonth = (decimal)author?.Items
+                .Where(t => t!.Commit!.Author!.Date > DateTime.Now.AddMonths(-1)).ToList().Count!;
+            decimal commitsCountPerYear = (decimal)author.Items
+                .Where(t => t!.Commit!.Author!.Date > DateTime.Now.AddYears(-1)).ToList().Count! + 1;
+            return new Collaborator()
+            {
+                Id = x.Id,
+                Username = x.Login,
+                DisplayName = x.Name,
+                ProfilePicUrl = x.AvatarUrl,
+                Description = x.Bio,
+                Location = x.Location,
+                PersonalWebsite = x.Blog,
+                Email = x.Email,
+                Company = x.Company,
+                FollowersCount = x.Followers,
+                FollowingCount = x.Following,
+                CommitsTotal = author?.TotalCount ?? 0,
+                ActivityIndex = Math.Round(commitsCountPerMonth / commitsCountPerYear, 1)
+            };
         }));
 
         var issuersTasks = new List<Task<Octokit.User>>();
@@ -96,7 +101,12 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
                 RepositoryOwner = repository.Owner.Login,
                 RepositoryDescription = repository.Description,
                 Collaborators = users,
-                Issuers = issuersDto
+                Issuers = issuersDto,
+                OpenCommitsTotal = openRepositoryCommits.Count,
+                OpenIssuesTotal = openRepositoryIssues.Count,
+                PullRequestsTotal = repositoryPullRequests.Count,
+                Languages = repositoryLanguages.ToDictionary(x => x.Name, x => x.NumberOfBytes),
+                MostUsedLanguage = repositoryLanguages.MaxBy(x => x.NumberOfBytes)!.Name,
             };
     }
 
@@ -157,7 +167,7 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
         var languages = groupedLanguages.ToDictionary(t => t.Key, t => t.Sum(x => x.NumberOfBytes));
 
         var activity = Math.Round(
-            (decimal)commits.Where(x => x!.Commit!.Committer!.Date > DateTime.Now.AddMonths(-1)).ToList().Count
+            (decimal)commits.Where(x => x!.Commit!.Author!.Date > DateTime.Now.AddMonths(-1)).ToList().Count
             / commits.Where(x => x!.Commit!.Author!.Date > DateTime.Now.AddYears(-1)).ToList().Count * 10, 1);
 
         var stackExchangeUser = await ConnectToStackExchange.GetUserByNameAsync(userLogin, cancellationToken);

@@ -14,15 +14,15 @@ public class User
 
     public string DisplayName { get; init; } = null!;
 
-    public string Location { get; init; } = null!;
+    public string PersonalWebsite { get; init; } = null!;
 
-    public string? PersonalWebsite { get; init; }
+    public int FollowersCount { get; init; }
 
-    public string? Company { get; set; }
+    public int FollowingCount { get; init; }
 
-    public string? Email { get; set; }
+    public string? Location { get; init; }
 
-    public int FollowersCount { get; set; }
+    public string? Company { get; init; }
 
-    public int FollowingCount { get; set; }
+    public string? Email { get; init; }
 }
