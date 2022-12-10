@@ -14,10 +14,10 @@ public sealed class GithubController : ControllerBase
     public GithubController(IGithubAggregatorService service)
         => _service = service;
 
-    [HttpGet("repository/{url}")]
-    public async Task<ActionResult<GetRepositoryAggregationResponse>> GetRepositoryAggregation(string url)
+    [HttpGet("repository/{owner}/{name}")]
+    public async Task<ActionResult<GetRepositoryAggregationResponse>> GetRepositoryAggregation(string owner, string name)
     {
-        var result = await _service.GetRepositoryAggregationAsync(url, HttpContext.RequestAborted);
+        var result = await _service.GetRepositoryAggregationAsync(owner, name, HttpContext.RequestAborted);
         return Ok(result);
     }
 
