@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Gitregator.Github.Client;
@@ -17,8 +20,7 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
         _fixture = new Fixture();
     }
 
-    public Task<GetRepositoryAggregationResponse> GetRepositoryAggregationAsync(
-        string githubUrl,
+    public Task<GetRepositoryAggregationResponse> GetRepositoryAggregationAsync(string owner, string name,
         CancellationToken cancellationToken)
         => Task.FromResult(
             new GetRepositoryAggregationResponse
@@ -31,12 +33,47 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
                 Issuers = _fixture.CreateMany<Collaborator>()
             });
 
-    public Task<GetMemberAggregationResponse> GetMemberAggregationAsync(string userLogin,
+    public async Task<GetMemberAggregationResponse> GetMemberAggregationAsync(string userLogin,
         CancellationToken cancellationToken)
     {
-        var userSource = _provider.GetClient().User.Get(userLogin).WaitAsync(cancellationToken).Result;
+        var client = _provider.GetClient();
+        var userSource = client.User.Get(userLogin).WaitAsync(cancellationToken).Result;
 
-        var starsCount = _provider.GetClient().Activity.Starring.GetAllForUser(userLogin).WaitAsync(cancellationToken).Result.Count;
+        var starsCount = client.Activity.Starring.GetAllForUser(userLogin).WaitAsync(cancellationToken)
+            .Result.Count;
+
+        // Get count of commit pages
+        var pageNum = Math.Ceiling((double)(await client.Connection.Get<Wrapper>(
+            new Uri(
+                $"{client.Connection.BaseAddress}search/commits?q=committer:{userLogin}&per_page=1"),
+            new Dictionary<string, string>())).Body.TotalCount / 100);
+
+        // Get count of commits
+        var commits = (await client.Connection.Get<Wrapper>(
+            new Uri(
+                $"{client.Connection.BaseAddress}search/commits?q=committer:{userLogin}&per_page=100&page={pageNum}"),
+            new Dictionary<string, string>())).Body.Items.ToList();
+
+        var repos = commits.Select(x => x.Repository).Distinct().ToList();
+        var reposCount = repos.Count();
+
+        var languages = new Dictionary<string, long>();
+        foreach (var repo in repos)
+        {
+            var currentLanguages = (await client.Repository.GetAllLanguages(repo!.Owner!.Login, repo.Name))
+                .ToDictionary(x => x.Name, x => x.NumberOfBytes);
+            foreach (var t in currentLanguages)
+            {
+                if (languages.ContainsKey(t.Key))
+                {
+                    languages[t.Key] += t.Value;
+                }
+                else
+                {
+                    languages.Add(t.Key, t.Value);
+                }
+            }
+        }
 
         var user = new ExtendedUser()
         {
@@ -51,9 +88,12 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
             Company = userSource.Company,
             FollowersCount = userSource.Followers,
             FollowingCount = userSource.Following,
-            StarsCount = starsCount
+            StarsCount = starsCount,
+            CommitsCount = commits.Count,
+            ReposCount = reposCount,
+            Languages = languages
         };
 
-        return Task.FromResult(new GetMemberAggregationResponse {User = user});
+        return new GetMemberAggregationResponse { User = user };
     }
 }

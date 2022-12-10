@@ -1,7 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Gitregator.Api.Dtos;
-using User = Octokit.User;
 
 namespace Gitregator.Api.Services;
 
