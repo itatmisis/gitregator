@@ -56,7 +56,7 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
         {
             tasks.Add(client.Connection.Get<Wrapper>(
                 new Uri(
-                    $"""{client.Connection.BaseAddress}search/commits?q=committer:"{userLogin}"&per_page=100&page={i}"""),
+                    $"{client.Connection.BaseAddress}search/commits?q=committer:{userLogin}&per_page=100&page={i}"),
                 new Dictionary<string, string>()));
         }
 
@@ -66,11 +66,11 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
         {
             client.Connection.Get<Wrapper>(
                 new Uri(
-                    $"""{client.Connection.BaseAddress}search/issues?q=user:"{userLogin}" is:pull-request&per_page=1"""),
+                    $"{client.Connection.BaseAddress}search/issues?q=user:{userLogin} is:pull-request&per_page=1"),
                 new Dictionary<string, string>()),
             client.Connection.Get<Wrapper>(
                 new Uri(
-                    $"""{client.Connection.BaseAddress}search/issues?q=user:"{userLogin}" is:issue&per_page=1"""),
+                    $"{client.Connection.BaseAddress}search/issues?q=user:{userLogin} is:issue&per_page=1"),
                 new Dictionary<string, string>())
         };
 
