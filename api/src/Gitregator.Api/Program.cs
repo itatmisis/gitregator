@@ -1,4 +1,6 @@
+using System;
 using Gitregator.Api.Services;
+using Gitregator.Github.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,8 +18,10 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 services.AddSingleton(Log.Logger);
 
-// Add services to the container.
+var gitClient = new GithubClientProvider(Environment.GetEnvironmentVariable("GITHUB_TOKEN")!);
+services.AddSingleton(gitClient);
 
+// Add services to the container.
 services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();

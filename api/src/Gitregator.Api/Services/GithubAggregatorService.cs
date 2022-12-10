@@ -1,13 +1,23 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Gitregator.Github.Client;
+using Octokit;
 
 namespace Gitregator.Api.Services;
 
 public sealed class GithubAggregatorService : IGithubAggregatorService
 {
-    public Task<string> GetRepositoryAggregationAsync(string githubUrl, CancellationToken cancellationToken)
-        => Task.FromResult("Rep");
+    private readonly GithubClientProvider _provider;
 
-    public Task<string> GetMemberAggregationAsync(string userId, CancellationToken cancellationToken)
-        => Task.FromResult("Mem");
+    public GithubAggregatorService(GithubClientProvider provider) => _provider = provider;
+
+    public Task<List<User>> GetRepositoryAggregationAsync(string githubUrl, CancellationToken cancellationToken)
+    {
+        var t = Task.FromResult(new List<User>());
+        return t;
+    }
+
+    public Task<User> GetMemberAggregationAsync(string userLogin, CancellationToken cancellationToken)
+        => _provider.GetClient().User.Get(userLogin).WaitAsync(cancellationToken);
 }

@@ -20,10 +20,10 @@ public sealed class GithubController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("member/{id}")]
-    public async Task<IActionResult> GetMemberAggregation(string id)
+    [HttpGet("member/{username}")]
+    public async Task<IActionResult> GetMemberAggregation(string username)
     {
-        var result = await _service.GetMemberAggregationAsync(id, HttpContext.RequestAborted);
+        var result = await _service.GetMemberAggregationAsync(username, HttpContext.RequestAborted);
         return Ok(result);
     }
 }
