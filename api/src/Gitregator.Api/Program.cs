@@ -1,9 +1,6 @@
 using System;
-using System.IO;
-using System.IO.Compression;
-using System.Net.Http;
-using System.Text;
 using Gitregator.Api.Services;
+using Gitregator.Github.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +17,9 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
     .CreateLogger();
 services.AddSingleton(Log.Logger);
+
+var gitClient = new GithubClientProvider(Environment.GetEnvironmentVariable("GITHUB_TOKEN")!);
+services.AddSingleton(gitClient);
 
 // Add services to the container.
 
@@ -41,4 +41,3 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 await app.RunAsync();
-

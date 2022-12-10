@@ -1,16 +1,23 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Gitregator.Github.Client;
+using Octokit;
 using AutoFixture;
 using Gitregator.Api.Dtos;
+using User = Octokit.User;
 
 namespace Gitregator.Api.Services;
 
 public sealed class GithubAggregatorService : IGithubAggregatorService
 {
+    private readonly GithubClientProvider _provider;
     private readonly IFixture _fixture;
 
-    public GithubAggregatorService()
-        => _fixture = new Fixture();
+    public GithubAggregatorService(GithubClientProvider provider)
+    {
+        _provider = provider;
+        _fixture = new Fixture();
+    }
 
     public Task<GetRepositoryAggregationResponse> GetRepositoryAggregationAsync(
         string githubUrl,
@@ -26,6 +33,6 @@ public sealed class GithubAggregatorService : IGithubAggregatorService
                 Issuers = _fixture.CreateMany<Collaborator>()
             });
 
-    public Task<GetMemberAggregationResponse> GetMemberAggregationAsync(string userId, CancellationToken cancellationToken)
-        => Task.FromResult(_fixture.Create<GetMemberAggregationResponse>());
+    public Task<User> GetMemberAggregationAsync(string userLogin, CancellationToken cancellationToken)
+        => _provider.GetClient().User.Get(userLogin).WaitAsync(cancellationToken);
 }
