@@ -6,4 +6,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Update="GithubHttpClient.cs">
+        <DependentUpon>IGithubHttpClient.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

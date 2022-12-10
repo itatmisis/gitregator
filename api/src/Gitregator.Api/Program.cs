@@ -1,3 +1,8 @@
+using System;
+using System.IO;
+using System.IO.Compression;
+using System.Net.Http;
+using System.Text;
 using Gitregator.Api.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,3 +41,4 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 await app.RunAsync();
+

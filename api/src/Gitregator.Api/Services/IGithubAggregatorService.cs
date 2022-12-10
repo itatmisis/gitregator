@@ -1,11 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Gitregator.Api.Dtos;
 
 namespace Gitregator.Api.Services;
 
 public interface IGithubAggregatorService
 {
-    Task<string> GetRepositoryAggregationAsync(string githubUrl, CancellationToken cancellationToken);
+    Task<GetRepositoryAggregationResponse> GetRepositoryAggregationAsync(string githubUrl, CancellationToken cancellationToken);
 
-    Task<string> GetMemberAggregationAsync(string userId, CancellationToken cancellationToken);
+    Task<GetMemberAggregationResponse> GetMemberAggregationAsync(string userId, CancellationToken cancellationToken);
 }
