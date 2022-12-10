@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Gitregator.Api.Dtos;
 using Gitregator.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,16 +15,16 @@ public sealed class GithubController : ControllerBase
         => _service = service;
 
     [HttpGet("repository/{url}")]
-    public async Task<IActionResult> GetRepositoryAggregation(string url)
+    public async Task<ActionResult<GetRepositoryAggregationResponse>> GetRepositoryAggregation(string url)
     {
         var result = await _service.GetRepositoryAggregationAsync(url, HttpContext.RequestAborted);
         return Ok(result);
     }
 
-    [HttpGet("member/{id}")]
-    public async Task<IActionResult> GetMemberAggregation(string id)
+    [HttpGet("member/{username}")]
+    public async Task<IActionResult> GetMemberAggregation(string username)
     {
-        var result = await _service.GetMemberAggregationAsync(id, HttpContext.RequestAborted);
+        var result = await _service.GetMemberAggregationAsync(username, HttpContext.RequestAborted);
         return Ok(result);
     }
 }
