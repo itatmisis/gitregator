@@ -11,5 +11,6 @@ public class Wrapper
 {
     [JsonPropertyName("total_count")]
     public int TotalCount { get; set; }
+    [JsonPropertyName("items")]
     public IEnumerable<Root> Items { get; init; } = Array.Empty<Root>();
 }

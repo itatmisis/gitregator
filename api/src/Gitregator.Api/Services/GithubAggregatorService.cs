@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Gitregator.Github.Client;
-using AutoFixture;
 using Gitregator.Api.Dtos;
 using Gitregator.StackExchange.Client.HttpServices;
 using Octokit;
@@ -14,26 +13,92 @@ namespace Gitregator.Api.Services;
 public sealed class GithubAggregatorService : IGithubAggregatorService
 {
     private readonly GithubClientProvider _provider;
-    private readonly IFixture _fixture;
 
     public GithubAggregatorService(GithubClientProvider provider)
-    {
-        _provider = provider;
-        _fixture = new Fixture();
-    }
+        => _provider = provider;
 
-    public Task<GetRepositoryAggregationResponse> GetRepositoryAggregationAsync(string owner, string name,
+    public async Task<GetRepositoryAggregationResponse> GetRepositoryAggregationAsync(
+        string owner,
+        string name,
         CancellationToken cancellationToken)
-        => Task.FromResult(
+    {
+        var client = _provider.GetClient();
+        var repository = await client.Repository.Get(owner, name);
+        var contributors = await client.Repository.GetAllContributors(owner, name);
+        var issues = await client.Issue.GetAllForRepository(owner, name);
+        var issuers = issues.Select(x => x.User).Distinct().ToList();
+        var contids = contributors.Select(x => x.Login);
+        var users = new List<Collaborator>();
+        var usersTasks = new List<Task<Octokit.User>>();
+        foreach (var con in contids)
+        {
+           usersTasks.Add(client.User.Get(con));
+        }
+
+        var usersGit = await Task.WhenAll(usersTasks);
+
+        var tasks22 = usersGit.Where(x => !x.Login.Contains("-")).Select(
+            x => client.Connection.Get<Wrapper>(
+                new Uri(
+                    $"{client.Connection.BaseAddress}search/commits?q=committer:{x.Login}&per_page=100"),
+                new Dictionary<string, string>()));
+
+        var tasks22Result = await Task.WhenAll(tasks22);
+        var commits = tasks22Result.SelectMany(x => x.Body.Items);
+
+        var activity = Math.Round(
+            (decimal)commits.Where(x => x!.Commit!.Committer!.Date > DateTime.Now.AddMonths(-1)).ToList().Count
+            / commits.Where(x => x!.Commit!.Author!.Date > DateTime.Now.AddYears(-1)).ToList().Count * 10, 1);
+
+        users.AddRange(usersGit.Select(x => new Collaborator()
+        {
+            Id = x.Id,
+            Username = x.Login,
+            DisplayName = x.Name,
+            ProfilePicUrl = x.AvatarUrl,
+            Description = x.Bio,
+            Location = x.Location,
+            PersonalWebsite = x.Blog,
+            Email = x.Email,
+            ActivityIndex = activity,
+            Company = x.Company,
+            FollowersCount = x.Followers,
+            FollowingCount = x.Following,
+            CommitsTotal = tasks22Result.FirstOrDefault(z => z.Body.Items.FirstOrDefault()?.Author?.Login == x.Login)?.Body?.TotalCount ?? 0,
+        }));
+
+        var issuersTasks = new List<Task<Octokit.User>>();
+        var issuersDto = new List<Collaborator>();
+        foreach (var iss in issuers)
+        {
+            var issuerDto = new Collaborator
+            {
+                Id = iss.Id,
+                Username = iss.Login,
+                DisplayName = iss.Name,
+                ProfilePicUrl = iss.AvatarUrl,
+                Description = iss.Bio,
+                Location = iss.Location,
+                PersonalWebsite = iss.Blog,
+                Email = iss.Email,
+                Company = iss.Company,
+                FollowersCount = iss.Followers,
+                FollowingCount = iss.Following,
+            };
+            issuersDto.Add(issuerDto);
+        }
+
+        return
             new GetRepositoryAggregationResponse
             {
-                RepositoryName = "HelloWorld",
-                RepositoryHttpUrl = "https://github.com/itatmisis/gitregator",
-                RepositoryOwner = "SomeOrganization",
-                RepositoryDescription = "Some description of repository",
-                Collaborators = _fixture.CreateMany<Collaborator>(),
-                Issuers = _fixture.CreateMany<Collaborator>()
-            });
+                RepositoryName = repository.Name,
+                RepositoryHttpUrl = repository.HtmlUrl,
+                RepositoryOwner = repository.Owner.Login,
+                RepositoryDescription = repository.Description,
+                Collaborators = users,
+                Issuers = issuersDto
+            };
+    }
 
     public async Task<GetMemberAggregationResponse> GetMemberAggregationAsync(string userLogin,
         CancellationToken cancellationToken)

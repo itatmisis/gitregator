@@ -28,8 +28,15 @@ public sealed class GithubController : ControllerBase
     [ProducesResponseType(typeof(GetMemberAggregationResponse), 200)]
     public async Task<ActionResult<GetRepositoryAggregationResponse>> GetRepositoryAggregation(string owner, string name)
     {
-        var result = await _service.GetRepositoryAggregationAsync(owner, name, HttpContext.RequestAborted);
-        return Ok(result);
+        try
+        {
+            var result = await _service.GetRepositoryAggregationAsync(owner, name, HttpContext.RequestAborted);
+            return Ok(result);
+        }
+        catch (Octokit.NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
     /// <summary>
     /// Gets the aggregated data for a user.

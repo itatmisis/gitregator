@@ -6,5 +6,7 @@ public class Collaborator : User
 
     public int PullRequestsTotal { get; init; }
 
+    public decimal ActivityIndex { get; init; }
+
     public int IssuesTotal { get; init; }
 }
