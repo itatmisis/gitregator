@@ -22,6 +22,7 @@ var gitClient = new GithubClientProvider(Environment.GetEnvironmentVariable("GIT
 services.AddSingleton(gitClient);
 
 // Add services to the container.
+
 services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
