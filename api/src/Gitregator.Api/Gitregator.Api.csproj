@@ -24,4 +24,9 @@
       </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Gitregator.Github.Client\Gitregator.Github.Client.csproj" />
+      <ProjectReference Include="..\Gitregator.StackExchange.Client\Gitregator.StackExchange.Client.csproj" />
+    </ItemGroup>
+
 </Project>
