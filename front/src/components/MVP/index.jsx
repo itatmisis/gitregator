@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MultipleSlider from "../MultipleSlider";
 import Selector from "../Selector";
 import SubHeader from "../SubHeader";
@@ -7,6 +7,7 @@ import s from "./MVP.module.css";
 
 function MVP() {
   const mvpList = useSelector((state) => state.mvpList.mvpList);
+  const dispatch = useDispatch();
   const [list, setList] = useState(JSON.parse(JSON.stringify(mvpList)));
 
   const fields = [

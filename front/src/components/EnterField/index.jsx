@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import s from "./EnterField.module.css";
-function EnterField() {
-  const [inp, setInp] = useState("URL ссылка");
+import { useDispatch, useSelector } from "react-redux";
 
+import s from "./EnterField.module.css";
+import { setGivenLink } from "../../slices/givenLinkSlice";
+function EnterField() {
+  const givenLink = useSelector((state) => state.givenLink.givenLink);
+  const [inp, setInp] = useState(JSON.parse(JSON.stringify(givenLink)));
+
+  const dispatch = useDispatch();
   function handleSubmit(e) {
+    dispatch(setGivenLink(inp));
     //setInp("URL ссылка");
   }
   return (
@@ -17,7 +23,7 @@ function EnterField() {
         <input
           type="text"
           className={s.input}
-          placeholder={inp}
+          placeholder={givenLink}
           onChange={(e) => setInp(e.target.value)}
         ></input>
         <Link to="/about">
