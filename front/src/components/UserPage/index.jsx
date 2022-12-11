@@ -5,7 +5,7 @@ import useFetch from "../../hooks/useFetch/useFetch";
 import s from "./userPage.module.css";
 function UserPage() {
   const { username, displayName } = useParams();
-  useFetch(["user", username]);
+  useFetch(["user", `${username}`]);
   return (
     <div className={s.userPg}>
       {username}
