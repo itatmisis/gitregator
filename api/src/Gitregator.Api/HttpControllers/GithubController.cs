@@ -22,7 +22,7 @@ public sealed class GithubController : ControllerBase
     /// <param name="name">Name of repository</param>
     /// <remarks>
     /// <p><b>activityIndex from 0 to 10</b></p>
-    /// <p><b>email, company, location, repositoryDescription can be null</b></p>
+    /// <p><b>email, company, location, displayName, description, repositoryDescription can be null</b></p>
     /// </remarks>
     /// <response code="200">Returns Json representation of repository like GetRepositoryAggregationResponse</response>
     /// <response code="404">If the Repository is not found</response>
@@ -48,7 +48,7 @@ public sealed class GithubController : ControllerBase
     /// <param name="name">Name of repository</param>
     /// <remarks>
     /// <p><b>activityIndex from 0 to 10</b></p>
-    /// <p><b>email, company, location, repositoryDescription can be null</b></p>
+    /// <p><b>email, company, location, displayName, description, repositoryDescription can be null</b></p>
     /// </remarks>
     /// <response code="200">Returns Excel representation of repository like GetRepositoryAggregationResponse</response>
     /// <response code="404">If the Repository is not found</response>
@@ -72,7 +72,7 @@ public sealed class GithubController : ControllerBase
     /// <param name="username">User name from github</param>
     /// <remarks>
     /// <p><b>activityIndex from 0 to 10</b></p>
-    /// <p><b>email, company, location can be null</b></p>
+    /// <p><b>email, company, location, displayName, description can be null</b></p>
     /// </remarks>
     /// <response code="200">Returns Json representation of one User like GetMemberAggregationResponse</response>
     /// <response code="404">If the User is not found</response>
