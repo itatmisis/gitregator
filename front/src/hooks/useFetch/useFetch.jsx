@@ -9,7 +9,7 @@ function useFetch(props) {
   const mvpList = useSelector((state) => state.mvpList.mvpList);
   const rep = useSelector((state) => state.rep.rep);
   console.log("fetch", props);
-  console.log("props ", props);
+
   if (props[0] == "user") {
     axios
       .get(
@@ -40,10 +40,9 @@ function useFetch(props) {
         console.log(error.request);
       })
       .then((response) => {
-        console.log("DDDDDDDDDDDDDDDDDDDDD");
         console.log("data", response["data"]);
         dispatch(() => setRep(response["data"]));
-        dispatch(setMvpList(rep[0]["collaborators"]));
+        dispatch(() => setMvpList(rep["collaborators"]));
         console.log("rep ", rep[0]["collaborators"]);
         console.log("mvp", mvpList);
       });

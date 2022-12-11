@@ -1,10 +1,8 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import useFetch from "../../hooks/useFetch/useFetch";
 import { setMvpList } from "../../slices/mvpListSlice";
-import MultipleSlider from "../MultipleSlider";
-import Selector from "../Selector";
 import SubHeader from "../SubHeader";
 
 import s from "./MVP.module.css";
@@ -14,15 +12,20 @@ function MVP() {
   const givenLink = useSelector((state) => state.givenLink.givenLink);
   const rep = useSelector((state) => state.rep.rep);
   const dispatch = useDispatch();
-  dispatch(setMvpList(rep[0]["issuers"]));
-  console.log("rep ", rep[0]["issuers"]);
-  console.log(mvpList);
   const [list, setList] = useState(JSON.parse(JSON.stringify(mvpList)));
+  useEffect(() => {
+    setList(JSON.parse(JSON.stringify(mvpList)));
+  }, []);
+
   useFetch([
     "rep",
     givenLink.match("(?<=github.com/)(.*?)(?=/)"),
     givenLink.match("(?<=github.com/.*?/)(.*?)(?=/)")[0], // name
   ]);
+  /* useFetch([
+      "user",
+      givenLink.match("(?<=github.com/.*?/)(.*?)(?=/)")[0], // name
+    ]);*/
   const fields = [
     "username",
     "commitsTotal",
@@ -32,7 +35,7 @@ function MVP() {
     "pullRequestTotal",
     "displayName",
   ];
-  const [previousClick, setPreviousClick] = useState("");
+  const [previousClick, setPreviousClick] = useState(false);
   function sortByParam(users, param, prevClick) {
     const same = prevClick === param;
     switch (typeof users[0][param]) {
@@ -50,7 +53,7 @@ function MVP() {
             }
             return 0;
           });
-          setPreviousClick("");
+          setPreviousClick(false);
         } else {
           users.sort((a, b) => {
             let fa = a[param].toLowerCase(),
@@ -101,20 +104,6 @@ function MVP() {
     setList(() => value);
     console.log(list);
   };
-  /*
-  console.log("start");
-  mvpList.forEach((e) => {
-    console.log(`${e.username} ${e.commitsTotal} ${e.issuesTotal}`);
-  });
-  console.log();
-  console.log("changed");
-  sortByParam(mvpList, fields[1]);
-  console.log("start1");
-  mvpList.forEach((e) => {
-    console.log(`${e.username} ${e.commitsTotal} ${e.issuesTotal}`);
-  });
-  console.log("changed1");
-  sortByParam(mvpList, fields[0]); */
 
   return (
     <div>
