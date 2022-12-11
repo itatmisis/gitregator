@@ -19,6 +19,8 @@ public sealed class ExtendedUser : User
 
     public string? StackOverflowUrl { get; init; }
 
+    public int? StackOverdlowReputationChange { get; init; }
+
     public int PullRequestsCount { get; init; }
 
     public int IssuesCount { get; init; }

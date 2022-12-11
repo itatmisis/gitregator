@@ -11,6 +11,4 @@ public interface IGithubAggregatorService
     Task<byte[]> GetRepositoryAggregationExcelAsync(string owner, string name, CancellationToken cancellationToken);
 
     Task<GetMemberAggregationResponse> GetMemberAggregationAsync(string userId, CancellationToken cancellationToken);
-
-    Task<byte[]> GetMemberAggregationExcelAsync(string userId, CancellationToken cancellationToken);
 }

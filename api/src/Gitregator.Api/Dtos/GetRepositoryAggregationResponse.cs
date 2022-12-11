@@ -13,11 +13,11 @@ public class GetRepositoryAggregationResponse
 
     public string? RepositoryDescription { get; init; }
 
-    public int OpenCommitsTotal { get; init; }
+    public int AllRepositoryCommits { get; init; }
 
-    public int OpenIssuesTotal { get; init; }
+    public int OpenIssues { get; init; }
 
-    public int PullRequestsTotal { get; init; }
+    public int OpenPullRequests { get; init; }
 
     public string MostUsedLanguage { get; init; } = null!;
 
