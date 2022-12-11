@@ -10,9 +10,6 @@ function Header() {
       <Link to="/about">
         <span>Репозиторий</span>
       </Link>
-      <Link to="/">
-        <span>Наши контакты</span>
-      </Link>
     </header>
   );
 }
