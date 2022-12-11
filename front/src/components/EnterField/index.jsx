@@ -2,16 +2,16 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import s from "./EnterField.module.css";
 import { setGivenLink } from "../../slices/givenLinkSlice";
-import useFetch from "../../hooks/useFetch/useFetch";
+
+import s from "./EnterField.module.css";
 
 function EnterField() {
   const givenLink = useSelector((state) => state.givenLink.givenLink);
+  const dispatch = useDispatch();
   const [inp, setInp] = useState(JSON.parse(JSON.stringify(givenLink)));
   const [flag, setFlag] = useState(0);
 
-  const dispatch = useDispatch();
   function handleSubmit(e) {
     dispatch(setGivenLink(inp));
     setFlag(() => !flag);
@@ -21,7 +21,7 @@ function EnterField() {
     console.log(givenLink);
     //setInp("URL ссылка");
   }
-  flag && useFetch("rep", ["wok", "qwe"]);
+
   return (
     <div className={s.EnterField}>
       <div className={s.textField}>

@@ -14,7 +14,7 @@ function App() {
           <Route path="/about" element={<MVP></MVP>}></Route>
           <Route path="/callUs" element={<></>}></Route>
           <Route
-            path="about/user/:username/:displayName"
+            path="about/user/:username/:displayName/:personalWebsite/:profilePicUrl"
             element={<UserPage />}
           ></Route>
           <Route

@@ -1,4 +1,63 @@
 .userPg{
-  width: 100px;
-  height: 40px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: space-evenly;
+  background: #0A1117;
+  mix-blend-mode: color-dodge;
+  filter: brightness(200%);
+  
+}
+.desc {
+  z-index: 3;
+  width: 400px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.desc h1 {
+  z-index: 3;
+  font-family: 'Radiotechnika';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 35px;
+
+  /* identical to box height */
+  text-transform: uppercase;
+
+  color: #FFFFFF;
+}
+
+.desc span {
+  z-index: 3;
+  font-family: 'Nunito Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 27px;
+  letter-spacing: 0.04em;
+
+  color: #B4B4B4;
+}
+.container{
+  z-index: 0;
+  opacity: 1;
+  height: 84.5vh;
+  mix-blend-mode: luminosity;
+   width: auto;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  background: url('bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.profilePic{
+  z-index: 3;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
