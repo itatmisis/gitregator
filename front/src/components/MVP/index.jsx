@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-
+import useFetch from "../../hooks/useFetch/useFetch";
+import { setMvpList } from "../../slices/mvpListSlice";
 import MultipleSlider from "../MultipleSlider";
 import Selector from "../Selector";
 import SubHeader from "../SubHeader";
@@ -10,9 +11,18 @@ import s from "./MVP.module.css";
 
 function MVP() {
   const mvpList = useSelector((state) => state.mvpList.mvpList);
-
+  const givenLink = useSelector((state) => state.givenLink.givenLink);
+  const rep = useSelector((state) => state.rep.rep);
+  const dispatch = useDispatch();
+  dispatch(setMvpList(rep[0]["issuers"]));
+  console.log("rep ", rep[0]["issuers"]);
+  console.log(mvpList);
   const [list, setList] = useState(JSON.parse(JSON.stringify(mvpList)));
-
+  useFetch([
+    "rep",
+    givenLink.match("(?<=github.com/)(.*?)(?=/)"),
+    givenLink.match("(?<=github.com/.*?/)(.*?)(?=/)")[0], // name
+  ]);
   const fields = [
     "username",
     "commitsTotal",
@@ -131,7 +141,7 @@ function MVP() {
                   return (
                     <div className={s.mvpListEl} key={Math.random()}>
                       <Link
-                        to={`user/:${el["username"]}/:${el["displayName"]}`}
+                        to={`user/:${el["username"]}/:${el["displayName"]}/:${el["personalWebsite"]}/:${el["profilePicUrl"]}`}
                       >
                         <span>{el[field]}</span>
                       </Link>
