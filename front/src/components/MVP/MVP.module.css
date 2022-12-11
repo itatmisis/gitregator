@@ -4,15 +4,33 @@
   display: flex;
   justify-content: space-evenly;
   position: relative;
-  
+  background-color: #0A1117;
+  opacity: 0.97;
 }
 .sortingCategory{
   width: auto;
   
   
 }
+.mvpListEl{
+  border-bottom: 3px solid #2E2E2E;
+  text-align: center;
+  font-family: 'Radiotechnika';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 19px;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 28px 20px;
+}
+.mvpListEl::first-child{
+  margin-top: 30px;
+}
 .mvpList{
- color:black; 
+ color:white; 
+ background-color: #0A1117;
+opacity: 0.97;
  height: 77vh;
 overflow-y: scroll;
 }
@@ -22,12 +40,24 @@ overflow-y: scroll;
   height: 20px;
   display: flex;
   justify-content: space-evenly;
-  border: 1px solid black;
-  position: -webkit-sticky;
+  border-bottom: 1px solid #827F7F;
+  position: relative;
+  padding-bottom: 35px;
+  gap: 20px;
 }
 .categoryName{
   text-decoration: none;
   border: none;
-  background-color: #fff;
-  display: block;
+  display: flex;
+  position: sticky;
+  font-family: 'Radiotechnika';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 15px;
+    text-align: center;
+    text-transform: uppercase;
+  background:transparent;
+    color: #827F7F;
+  padding: 0 0 0 16px;
 }

@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import s from "./EnterField.module.css";
 function EnterField() {
   const [inp, setInp] = useState("URL ссылка");
 
   function handleSubmit(e) {
-    e.preventDefault();
     //setInp("URL ссылка");
   }
   return (
@@ -20,6 +20,11 @@ function EnterField() {
           placeholder={inp}
           onChange={(e) => setInp(e.target.value)}
         ></input>
+        <Link to="/about">
+          <button className={s.enterBtn} onClick={handleSubmit}>
+            <div className={s.insideBtn}></div>
+          </button>
+        </Link>
       </form>
     </div>
   );

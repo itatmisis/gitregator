@@ -9,6 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  flex-wrap: wrap;
   
 }
 .textField{
@@ -16,6 +17,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: auto;
 }
 .textField h1{
   font-family: 'Radiotechnika';
@@ -54,4 +56,45 @@
 }
 body{
   overflow: hidden;
+}
+.enterBtn{
+  background: url('enterBtn.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: none;
+  width: 230px;
+  height: 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.linkForm{
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.insideBtn{
+  z-index: 4;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('continueText.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  animation: rotate 10s linear infinite;
+}
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
 }
