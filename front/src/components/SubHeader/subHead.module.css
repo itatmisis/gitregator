@@ -1,7 +1,48 @@
 .subHeader{
   width: 100%;
   height: 200px;
+  display: flex;
+  justify-content: space-evenly;
+    align-items: center;
   background-color: #0A1117;
   mix-blend-mode: color-dodge;
     opacity: 0.97;
+}
+.exportBtn{
+  width: 200px;
+  height: 200px;
+  background: url('export.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  border:none;
+}
+.desc{
+  width: 250px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.desc h1{
+  font-family: 'Radiotechnika';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 35px;
+  
+    /* identical to box height */
+    text-transform: uppercase;
+  
+    color: #FFFFFF;
+}
+.desc span{
+  font-family: 'Nunito Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 27px;
+    letter-spacing: 0.04em;
+  
+    color: #B4B4B4;
 }

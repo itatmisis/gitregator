@@ -24,6 +24,10 @@
   text-transform: uppercase;
   margin: 28px 20px;
 }
+.mvpListEl a{
+  text-decoration: none;
+  color: white;
+}
 .mvpListEl::first-child{
   margin-top: 30px;
 }

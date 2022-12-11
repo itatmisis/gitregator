@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+
 import MultipleSlider from "../MultipleSlider";
 import Selector from "../Selector";
 import SubHeader from "../SubHeader";
+
 import s from "./MVP.module.css";
 
 function MVP() {
   const mvpList = useSelector((state) => state.mvpList.mvpList);
-  const dispatch = useDispatch();
+
   const [list, setList] = useState(JSON.parse(JSON.stringify(mvpList)));
 
   const fields = [
@@ -16,6 +19,8 @@ function MVP() {
     "issuesTotal",
     "pullRequestTotal",
     "mostUsedLanguage",
+    "pullRequestTotal",
+    "displayName",
   ];
   const [previousClick, setPreviousClick] = useState("");
   function sortByParam(users, param, prevClick) {
@@ -121,10 +126,15 @@ function MVP() {
                 >
                   {field}
                 </button>
+
                 {list.map((el) => {
                   return (
                     <div className={s.mvpListEl} key={Math.random()}>
-                      <span>{el[field]}</span>
+                      <Link
+                        to={`user/:${el["username"]}/:${el["displayName"]}`}
+                      >
+                        <span>{el[field]}</span>
+                      </Link>
                     </div>
                   );
                 })}
