@@ -8,7 +8,7 @@ function Header() {
         <span>Главная</span>
       </Link>
       <Link to="/about">
-        <span>Услуги</span>
+        <span>Репозиторий</span>
       </Link>
       <Link to="/">
         <span>Наши контакты</span>
